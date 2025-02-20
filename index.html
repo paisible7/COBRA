@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDENTIFICATION</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        img {
+            width: 100px;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <img src="logo.png" alt="Logo"> <!-- Remplacer "logo.png" par votre logo -->
+        <h2>Enregistrement</h2>
+        <form id="registration-form">
+            <input type="text" id="name" placeholder="Nom" required>
+            <input type="text" id="matricule" placeholder="Matricule" required>
+            <button type="submit">S'inscrire</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("registration-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const matricule = document.getElementById("matricule").value;
+
+            // Sauvegarde dans le localStorage pour usage ultérieur
+            localStorage.setItem("playerName", name);
+            localStorage.setItem("playerMatricule", matricule);
+
+            // Récupérer le tableau des utilisateurs s'il existe
+            let users = localStorage.getItem("users");
+            if (users) {
+                users = JSON.parse(users);
+            } else {
+                users = [];
+            }
+            // Vérifier si l'utilisateur existe déjà (basé sur le nom et matricule)
+            const userExists = users.some(user => user.name === name && user.matricule === matricule);
+            if (!userExists) {
+                // Ajout initial avec score 0 et 0 essais
+                users.push({ name: name, matricule: matricule, score: 0, attempts: 0 });
+                localStorage.setItem("users", JSON.stringify(users));
+            }
+            // Redirection vers la page du jeu
+            window.location.href = "game.html";
+        });
+    </script>
+
+</body>
+
+</html>

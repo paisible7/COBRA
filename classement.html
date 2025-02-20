@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASSEMENT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        caption {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="table-container">
+        <caption>Liste des Enregistrements</caption>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Matricule</th>
+                    <th>Score</th>
+                    <th>Essais</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Les données seront insérées ici -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        window.onload = function () {
+            let users = localStorage.getItem("users");
+            const tableBody = document.getElementById("table-body");
+
+            if (users) {
+                users = JSON.parse(users);
+                // Trier les utilisateurs par score décroissant
+                users.sort((a, b) => (b.score || 0) - (a.score || 0));
+
+                users.forEach((user, index) => {
+                    const row = document.createElement("tr");
+
+                    const numCell = document.createElement("td");
+                    numCell.textContent = index + 1;
+
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = user.name;
+
+                    const matriculeCell = document.createElement("td");
+                    matriculeCell.textContent = user.matricule;
+
+                    const scoreCell = document.createElement("td");
+                    scoreCell.textContent = user.score !== undefined ? user.score : 0;
+
+                    const attemptsCell = document.createElement("td");
+                    attemptsCell.textContent = user.attempts !== undefined ? user.attempts : 0;
+
+                    row.appendChild(numCell);
+                    row.appendChild(nameCell);
+                    row.appendChild(matriculeCell);
+                    row.appendChild(scoreCell);
+                    row.appendChild(attemptsCell);
+
+                    tableBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement("tr");
+                const noDataCell = document.createElement("td");
+                noDataCell.colSpan = 5;
+                noDataCell.textContent = "Aucune donnée disponible.";
+                row.appendChild(noDataCell);
+                tableBody.appendChild(row);
+            }
+        };
+    </script>
+
+</body>
+
+</html>
