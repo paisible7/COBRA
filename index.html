@@ -5,7 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IDENTIFICATION</title>
-    
+    <script type="module">
+        // Import des fonctions nécessaires
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+
+        // Configuration de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCPofS-WUlazWapW3Nzh9XM6lpHeWp35g0",
+            authDomain: "cobra-f7fe5.firebaseapp.com",
+            projectId: "cobra-f7fe5",
+            storageBucket: "cobra-f7fe5.firebasestorage.app",
+            messagingSenderId: "569106552617",
+            appId: "1:569106552617:web:249fa896d78da42b5dc938"
+        };
+
+        // Initialisation de Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;

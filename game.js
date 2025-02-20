@@ -1,22 +1,5 @@
-// Ajoute les importations nécessaires de Firebase en haut de ton fichier JavaScript
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
-
-// Configuration de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyCPofS-WUlazWapW3Nzh9XM6lpHeWp35g0",
-    authDomain: "cobra-f7fe5.firebaseapp.com",
-    projectId: "cobra-f7fe5",
-    storageBucket: "cobra-f7fe5.firebasestorage.app",
-    messagingSenderId: "569106552617",
-    appId: "1:569106552617:web:249fa896d78da42b5dc938"
-};
-
-// Initialisation de Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 var Snake = (function () {
+
     const INITIAL_TAIL = 4;
     var fixedTail = true;
     var intervalID;
@@ -42,36 +25,40 @@ var Snake = (function () {
     var lastAction = ActionEnum.none;
 
     // Fonction pour mettre à jour le score et le nombre d'essais de l'utilisateur
-    async function updateUserScore() {
+    function updateUserScore() {
         const name = localStorage.getItem("playerName");
         const matricule = localStorage.getItem("playerMatricule");
         if (!name || !matricule) return;
-
-        const docRef = doc(db, "scores", matricule);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            const userFound = docSnap.data();
-            if (userFound.attempts < 3) {
-                userFound.attempts++;
-                // Mise à jour uniquement si le nouveau score est supérieur au précédent
-                if (points > userFound.score) {
-                    userFound.score = points;
+        let users = localStorage.getItem("users");
+        if (users) {
+            users = JSON.parse(users);
+            // Recherche de l'utilisateur par nom et matricule
+            let userFound = users.find(user => user.name === name && user.matricule === matricule);
+            if (!userFound) {
+                // Si l'utilisateur n'existe pas (ce cas est rare car il a déjà été ajouté dans index.html)
+                userFound = {
+                    name: name,
+                    matricule: matricule,
+                    score: points,
+                    attempts: 1
+                };
+                users.push(userFound);
+            } else {
+                if (userFound.attempts < 3) {
+                    userFound.attempts++;
+                    // Mise à jour uniquement si le nouveau score est supérieur au précédent
+                    if (points > userFound.score) {
+                        userFound.score = points;
+                    }
                 }
-                await setDoc(docRef, userFound);
+                // Si 3 essais ont été effectués, aucune mise à jour n'est faite
             }
-        } else {
-            // Si l'utilisateur n'existe pas encore
-            await setDoc(docRef, {
-                name: name,
-                matricule: matricule,
-                score: points,
-                attempts: 1
-            });
+            localStorage.setItem("users", JSON.stringify(users));
         }
     }
 
     var game = {
+
         reset: function () {
             // Mise à jour du score en cas de défaite (si le jeu a été lancé)
             if (points > 0) {
