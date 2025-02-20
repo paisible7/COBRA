@@ -6,6 +6,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>COBRA GAME</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Ajouter ces scripts Firebase -->
+<script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js"></script>
+
+<script>
+    // Initialisation Firebase
+    const firebaseConfig = { /* même config que précédemment */ };
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Modifier la fonction updateUserScore
+    async function updateUserScore() {
+        const name = localStorage.getItem("playerName");
+        const matricule = localStorage.getItem("playerMatricule");
+        if (!name || !matricule) return;
+
+        try {
+            const userRef = db.collection("users").doc(matricule);
+            const doc = await userRef.get();
+            
+            if (doc.exists) {
+                const userData = doc.data();
+                let newAttempts = userData.attempts + 1;
+                let newScore = userData.score;
+
+                if (newAttempts <= 3 && points > userData.score) {
+                    newScore = points;
+                }
+
+                await userRef.update({
+                    score: newScore,
+                    attempts: newAttempts
+                });
+            }
+        } catch (error) {
+            console.error("Erreur de mise à jour:", error);
+        }
+    }
+</script>
     <!-- Inclusion du script du jeu -->
     <script src="game.js" defer></script>
 </head>

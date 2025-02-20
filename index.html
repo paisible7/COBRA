@@ -5,24 +5,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IDENTIFICATION</title>
-    <script type="module">
-        // Import des fonctions nécessaires
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+    <!-- Ajouter ces scripts Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js"></script>
 
-        // Configuration de Firebase
+    <script>
+        // Initialisation Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCPofS-WUlazWapW3Nzh9XM6lpHeWp35g0",
             authDomain: "cobra-f7fe5.firebaseapp.com",
             projectId: "cobra-f7fe5",
-            storageBucket: "cobra-f7fe5.firebasestorage.app",
+            storageBucket: "cobra-f7fe5.appspot.com",
             messagingSenderId: "569106552617",
             appId: "1:569106552617:web:249fa896d78da42b5dc938"
         };
 
-        // Initialisation de Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        document.getElementById("registration-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const matricule = document.getElementById("matricule").value;
+
+            // Sauvegarde locale
+            localStorage.setItem("playerName", name);
+            localStorage.setItem("playerMatricule", matricule);
+
+            // Envoi à Firebase
+            try {
+                const userRef = db.collection("users").doc(matricule);
+                const doc = await userRef.get();
+
+                if (!doc.exists) {
+                    await userRef.set({
+                        name: name,
+                        matricule: matricule,
+                        score: 0,
+                        attempts: 0
+                    });
+                }
+                window.location.href = "game.html";
+            } catch (error) {
+                console.error("Erreur d'enregistrement:", error);
+            }
+        });
     </script>
     <style>
         body {
